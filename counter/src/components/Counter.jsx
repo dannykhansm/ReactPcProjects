@@ -1,21 +1,35 @@
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 import React, { Component } from "react";
 class Counter extends Component {
   render() {
+    const { onIncriment, counter, onDicrement, onDelete } = this.props;
     return (
-      <div>
-        <span className={this.getBatchClasses()}>{this.formatCount()}</span>
-        <button
-          onClick={() => this.props.onIncriment(this.props.counter)}
-          className="btn btn-secondary btn-sm "
-        >
-          Increment
-        </button>
-        <button
-          onClick={() => this.props.onDelete(this.props.counter.id)}
-          className="btn btn-danger btn-sm m-2"
-        >
-          Delete
-        </button>
+      <div className="row">
+        <div className="col-1">
+          <span className={this.getBatchClasses()}>{this.formatCount()}</span>
+        </div>
+        <div className="col">
+          <button
+            onClick={() => onIncriment(counter)}
+            className="btn btn-secondary btn-sm"
+          >
+            +
+          </button>
+          <button
+            onClick={() => onDicrement(counter)}
+            className="btn btn-secondary btn-sm m-2"
+            disabled={counter.value === 0 ? "disabled" : ""}
+          >
+            -
+          </button>
+
+          <button
+            onClick={() => onDelete(counter.id)}
+            className="btn btn-danger btn-sm"
+          >
+            x
+          </button>
+        </div>
       </div>
     );
   }
