@@ -45,7 +45,8 @@ class Movies extends Component {
         <div className="col-sm-3">
           <ListGroup
             items={this.state.geners}
-            // textProperty="name"  // we hava assign same value as defaultProps
+            // textProperty="name"
+            // we hava assign same value as defaultProps
             // valueProperty="_id"
             onItemSelect={this.handleGenresSelect}
           />
