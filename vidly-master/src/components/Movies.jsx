@@ -5,15 +5,18 @@ import Pagination from "./common/Pagination";
 import { paginate } from "../utils/paginate";
 import ListGroup from "./common/listGroup";
 import MoviesTable from "./MoviesTable";
+import _ from "lodash";
+
 class Movies extends Component {
   state = {
     movies: [],
     geners: [],
+    sortColumn: { path: "title", order: "asc" },
     currentPage: 1,
     pageSize: 4,
   };
   componentDidMount() {
-    const geners = [{ name: "All Genres" }, ...getGenres()];
+    const geners = [{ _id: "", name: "All Genres" }, ...getGenres()];
     this.setState({ movies: getMovies(), geners });
   }
   handleDelete = (movie) => {
@@ -35,12 +38,16 @@ class Movies extends Component {
   handleGenresSelect = (genre) => {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
+  };
   render() {
     const { length: count } = this.state.movies;
     const {
       pageSize,
       currentPage,
       selectedGenre,
+      sortColumn,
       movies: allMovies,
     } = this.state;
     if (count === 0) return <p>There are no Movies in the database</p>;
@@ -48,7 +55,9 @@ class Movies extends Component {
       selectedGenre && selectedGenre._id
         ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
         : allMovies;
-    const movies = paginate(filtered, currentPage, pageSize);
+
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+    const movies = paginate(sorted, currentPage, pageSize);
 
     return (
       <div className="row">
@@ -63,9 +72,11 @@ class Movies extends Component {
         <div className="col">
           <p>Showing {filtered.length} Movies in Database</p>
           <MoviesTable
+            sortColumn={sortColumn}
             movies={movies}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
+            onSort={this.handleSort}
           />
           <Pagination
             itemsCount={filtered.length}
